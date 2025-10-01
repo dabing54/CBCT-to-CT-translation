@@ -1,0 +1,91 @@
+# 基础控制
+process: 4  # 1：训练, 2：继续训练， 3：测试， 4：FixTest
+load_model_file: 'FlowMatch_sCBCT1_logpoint_360.pth'  # 继续训练时加载的模型  160  240分界
+epochs: 20
+config_file: 'flow_match.yaml'
+model_name: 'FlowMatch'  # FlowMatch, DDIM, Unet
+experiment_name: 'run6'
+
+# FlowMatch: run6， point=360
+# DDIM: run1, point=160
+# DDIM: run6, point=270
+
+
+# 训练参数
+train:
+  batch_size: 8  # 8
+  batch_num: 200  # 每个epoch由多少个min batch组成
+  valid_gap: 10  # 单位log point 10
+  out_mask_weight: 0.1  # 0.1
+
+# 测试参数
+test:
+  test_batch: 16  # 16
+  use_mask_eval: True
+  is_save_sCT: True  # 测试时保存sCT数据  # TODO
+
+# Check point
+checkpoint:
+  checkpoint_path: 'F:\ProjectData\6-sCT3'  # 在程序中会根据数据集名、模型名、实验名创建文件夹
+  model_save_gap: 40  # 模型存储间隔  20  #
+  sample_gap: 5  # 训练时，采样间隔，单位logpoint 20  5
+
+# Data
+data:
+  dataset_name: 'SynthRADTask2'  # 'LDCT', 'EdgeNeck', 'SynthRADTask2'
+#  data_root_path: 'F:\3-Data\3-LDCT'
+#  patient_list_path: '..\data\LDCT'
+#  data_root_path: 'F:\3-Data\2-sdfy_cbct_to_ct\neck'
+#  patient_list_path: '..\data\EdgeNeck'
+  data_root_path: 'F:\3-Data\1-SynthRADTask2'
+  patient_list_path: '..\data\SynthRADTask2'
+  ldct_group_list: ['sCBCT1']  # 低剂量数据组名， P10, P20, P40, sCBCT # 验证、测试时只取第一个
+
+  save_data_root_path: 'F:\ProjectData\6-sCT3\SynthRADTask2\out'
+
+
+# Transform
+transform:
+  apply_augment: True  # 是否应用数据增强
+  min_val: -1024
+  max_val: 1024   # 3000
+  max_std: 5  # 随机高斯噪声最大std  5
+  max_bright:   # 随机亮度[-40, 50]， [-45, 50]
+    - -10  # min
+    - 10  # max
+  is_remove_out_mask: False  # 读取数据时，是否移除mask外的区域值
+  is_use_hist_eq: False  # 是否对cbct应用直方图均衡  # 效果不好
+
+# General
+general:
+  num_workers: 0  # 加载数据时使用的进程数 # 4  调试时使用0
+  pin_memory: False  # 设置为True则将数据暂存在cpu中，对于大数据可增加数据读取数据，但是内存消耗大
+
+# optim
+optim:
+  optim_name: 'Adam'
+  lr: 1.0e-4  # 2.0e-5
+
+# lrScheduler
+lr_scheduler:
+  warmup: 1
+  milestone_list:  # 60, 120, 180, 240
+    - 40  # 60
+    - 100
+    - 160
+    - 220
+    - 240
+  gamma: 0.5  # 0.5
+
+# fixed predict
+fix_pred:
+  fixed_group: 'test'
+  fixed_patient_idx: 0  # 2  # valid group, id=2, slice=60
+  fixed_slice_idx: 33  # 60
+
+# display info
+display:
+  min_val: -160  # 显示的窗宽窗位信息
+  max_val: 240
+  is_remove_out_mask_to_display: False  # 可视化时，是否移除mask外的区域值
+  log_point_record_start: 15  # log point记录的起始点

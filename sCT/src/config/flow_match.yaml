@@ -1,0 +1,23 @@
+# unet
+net:
+  img_c: 1  # img和条件
+  out_c: 1  # 不考虑因为学习方差而需要的x2
+  img_size: 256
+  n_channels: 64  # 128
+  channel_mult:
+    - 1
+    - 1
+    - 2
+    - 2
+    - 4
+    - 4
+  attention_res: '16'
+  num_blocks: 2
+  num_heads: 4  # 4
+  dropout: 0.1  # 0.1  0.2
+  use_scale_shift_norm: False  # True会导致ME偏向正值
+
+#
+flow_match:
+  n_step: 100
+  flow_match_name: 'otcfm'  # otcfm, sbcfm

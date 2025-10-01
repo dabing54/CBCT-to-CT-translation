@@ -1,0 +1,42 @@
+# unet
+net:
+  img_c: 2  # img和条件
+  out_c: 1
+  img_size: 256
+  n_channels: 64  # 128  64
+  channel_mult:
+    - 1
+    - 1
+    - 2
+    - 2
+    - 4
+    - 4
+  num_res_blocks:
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2  # 12
+    - 2 # 4
+  attention_res:  # 8
+    - 16
+  num_heads: 4  # 4
+  dropout: 0.1  # 0.1  0.2
+  dropout_start_res: 16
+  use_scale_shift_norm: False
+  use_skip_connection_coef: False
+  use_first_down: False  # 是否第一个卷积则下采样, True结果很差，应该有问题
+
+# DDIM
+ddpm:
+  n_step: 1000
+  n_step_used: 100  # 采样时，使用的步数250
+  predict_type: 'v_predict'  # 'v_predict', 'epsilon'
+  beta_schedule: 'shifted_cosine_interpolated'  # 'linear'  'cosine' 'shifted_cosine' 'shifted_cosine_interpolated'
+  noise_d: 64  # 'shifted_cosine'的参数
+  loss_start_res: 256 # 32 计算loss时的起始分辨率，仅用于均值部分，即l1或l2
+  ddim_eta: 0  # 0 为ddim, 1为ddpm
+  loss_type: 'l2'  # 'l1', 'l2'
+  t_sampler_name: 'uniform'  # 'uniform', 'loss_second-moment'
+  clip_denoised: False  # 测试时,是否将获得的xt裁剪到[-1,1]
+  xt_from_y: False  # 将条件y作为xT,原文为False
