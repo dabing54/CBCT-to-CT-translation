@@ -1,0 +1,31 @@
+# unet
+net:
+  img_c: 1
+  out_c: 1
+  img_size: 256
+  n_channels: 64  # 128  64
+  channel_mult:
+    - 1
+    - 1
+    - 2
+    - 2
+    - 4
+    - 4
+  num_res_blocks:
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2  # 12
+    - 2 # 4
+  attention_res: # 8
+    - 16
+  num_heads: 4  # 4
+  dropout: 0.1  # 0.1  0.2
+  dropout_start_res: 16
+  use_scale_shift_norm: False
+  use_skip_connection_coef: False
+  use_first_down: False  # 是否第一个卷积则下采样, True结果很差，应该有问题
+
+#
+
